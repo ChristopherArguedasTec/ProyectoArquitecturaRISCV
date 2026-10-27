@@ -111,9 +111,16 @@ imprime `OK` o `ERROR`. Al final indica si todas las pruebas pasaron.
 3. **Run Simulation → Run Behavioral Simulation**.
 4. En la consola Tcl debe aparecer `TODAS LAS PRUEBAS PASARON`.
 
+## Diagramas
+
+Las iteraciones del diagrama están en [`docs/diagramas/`](docs/diagramas/README.md), cada una con
+su explicación. La primera iteración es una ruta de datos de un solo ciclo para los tipos I y S;
+sus limitaciones se corrigen en el diseño multiciclo.
+
 ## Estructura del repositorio
 
 ```
+docs/diagramas/                             iteraciones del diagrama
 ProyectoRISCV.1/
 ├── ProyectoRISCV.1.xpr                     proyecto de Vivado
 └── ProyectoRISCV.1.srcs/
