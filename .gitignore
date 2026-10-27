@@ -1,0 +1,18 @@
+# Archivos que Vivado genera automáticamente
+*.cache/
+*.sim/
+*.hw/
+*.ip_user_files/
+*.runs/
+*.gen/
+.Xil/
+*.jou
+*.log
+*.str
+*.wdb
+*.pb
+webtalk*
+xsim.dir/
+
+# Dumps de memoria generados en simulación
+dump_*.txt
