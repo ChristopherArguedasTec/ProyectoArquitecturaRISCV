@@ -63,8 +63,8 @@ La unidad de control es una máquina de estados que también decide los saltos c
 El procesador se construye de abajo hacia arriba. Cada etapa agrega módulos probados con su
 testbench antes de conectarlos:
 
-1. **Módulos básicos:** registros, sumador y multiplexores. *(este commit)*
-2. ALU y generador de inmediatos.
+1. **Módulos básicos:** registros, sumador y multiplexores. *(`ProyectoRISCV.1`)*
+2. **ALU y generador de inmediatos.** *(`ProyectoRISCV.2`)*
 3. Banco de registros, memoria de instrucciones y memoria de datos.
 4. Unidad de control (máquina de estados).
 5. Módulo superior `riscv_top` y simulación del programa completo con el dump de memoria.
@@ -104,12 +104,58 @@ imprime `OK` o `ERROR`. Al final indica si todas las pruebas pasaron.
 | `tb_sumador.v` | PC + 4 y PC + Imm con saltos reales del programa (`j +60`, `bge -64`, `bnez +16`) y desborde |
 | `tb_mux.v` | Todas las combinaciones de `sel` en los tres multiplexores, incluido el valor por defecto de `mux3` |
 
+## Etapa 2: ALU y generador de inmediatos
+
+Esta etapa agrega los dos bloques combinacionales que hacen el trabajo de cálculo de la ruta de
+datos: la ALU, que opera sobre los registros, y el generador de inmediatos, que convierte el campo
+inmediato de la instrucción en un número de 32 bits. El proyecto `ProyectoRISCV.2` contiene los
+módulos de la etapa 1 sin cambios más los nuevos.
+
+| Módulo | Qué hace | Dónde se usa en el procesador |
+|---|---|---|
+| `alu.v` | Suma, resta, AND y desplazamiento a la izquierda según `ALUControl`; entrega las banderas `zero` y `lt` | Estado Execute: resultado hacia ALUOut, banderas hacia la unidad de control |
+| `imm_gen.v` | Arma el inmediato de los formatos I, S, B, U y J según `ImmSrc` y lo extiende con signo | Entrada del mux ALUSrc, del sumador PC + Imm y del mux de resultado (`lui`) |
+
+Operaciones de la ALU y qué instrucciones las usan:
+
+| `ALUControl` | Operación | Instrucciones |
+|---|---|---|
+| `000` | `a + b` | `addi` y direcciones rs1 + imm de `lw`, `sw`, `sb` y `jalr` |
+| `001` | `a - b` | Comparación de `bne` y `bge` |
+| `010` | `a & b` | `andi` |
+| `011` | `a << b[4:0]` | `slli` |
+| `100`-`111` | Resultado 0 | Códigos reservados |
+
+Por qué se necesitan:
+
+- **ALU.** Es el único bloque que opera sobre los datos. Las banderas permiten que la unidad de
+  control decida los saltos: `bne` salta si `zero = 0` y `bge` salta si `lt = 0`. La bandera `lt`
+  compara con signo (`$signed`), porque el programa usa números negativos.
+- **Generador de inmediatos.** En los formatos S, B y J el inmediato viene repartido en varias
+  partes de la instrucción para que rs1, rs2 y rd queden siempre en la misma posición. Este bloque
+  lo reordena y copia el bit 31 para extender el signo, por ejemplo el −32 de `addi sp,sp,-32` o
+  el −64 de `bge`.
+
+Con esta etapa la ruta de datos ya soporta los cinco formatos que usa el programa (I, S, B, U y J).
+
+### Testbenches de esta etapa
+
+| Testbench | Qué prueba |
+|---|---|
+| `tb_alu.v` | 14 casos: las cuatro operaciones con valores del programa (`i++`, `b & 0xF`, `b << 1`), las comparaciones de `bne` (i = 0 y 1) y `bge` (i = 1 y 2), `lt` con signo (−1 contra 1), el uso de solo `b[4:0]` en el desplazamiento y un código reservado |
+| `tb_imm_gen.v` | 15 casos: 14 instrucciones reales de `main` en los cinco formatos (−32 de `addi sp`, −29 de `sb`, +16 de `bnez`, −64 de `bge`, 0xC000 de `lui`, +60 de `j`, entre otras) y un `ImmSrc` no usado |
+
+Se simularon en Vivado: los dos testbenches indican `TODAS LAS PRUEBAS PASARON`, igual que los
+cuatro de la etapa 1, que siguen incluidos en este proyecto.
+
 ## Cómo abrir y simular
 
-1. Abrir `ProyectoRISCV.1/ProyectoRISCV.1.xpr` con Vivado 2019 (parte `xc7a35tcpg236-1`).
+1. Abrir el `.xpr` de la etapa con Vivado 2019 (parte `xc7a35tcpg236-1`). La carpeta más reciente
+   (`ProyectoRISCV.2/ProyectoRISCV.2.xpr`) incluye todos los módulos hasta esa etapa.
 2. En **Simulation Sources**, clic derecho sobre el testbench → **Set as Top**.
 3. **Run Simulation → Run Behavioral Simulation**.
 4. En la consola Tcl debe aparecer `TODAS LAS PRUEBAS PASARON`.
+5. Cerrar la simulación antes de cambiar el Top y correr el siguiente testbench.
 
 ## Diagramas
 
@@ -121,12 +167,20 @@ sus limitaciones se corrigen en el diseño multiciclo.
 
 ```
 docs/diagramas/                             iteraciones del diagrama
-ProyectoRISCV.1/
+ProyectoRISCV.1/                            etapa 1: módulos básicos
 ├── ProyectoRISCV.1.xpr                     proyecto de Vivado
 └── ProyectoRISCV.1.srcs/
     ├── sources_1/imports/Desktop/          módulos de diseño (.v)
     └── sim_1/imports/Desktop/              testbenches (.v)
+ProyectoRISCV.2/                            etapa 2: etapa 1 + ALU y generador de inmediatos
+├── ProyectoRISCV.2.xpr
+└── ProyectoRISCV.2.srcs/
+    ├── sources_1/imports/Desktop/
+    └── sim_1/imports/Desktop/
 ```
+
+Cada carpeta `ProyectoRISCV.N` es el proyecto completo hasta la etapa N, así se puede abrir y
+simular cada avance por separado.
 
 Las carpetas que Vivado genera al simular (`.cache`, `.sim`, `.hw`, `.ip_user_files`, logs) no se
 guardan en el repositorio; Vivado las vuelve a crear.
