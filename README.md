@@ -66,7 +66,7 @@ testbench antes de conectarlos:
 1. **Módulos básicos:** registros, sumador y multiplexores. *(`ProyectoRISCV.1`)*
 2. **ALU y generador de inmediatos.** *(`ProyectoRISCV.2`)*
 3. **Banco de registros, memoria de instrucciones y memoria de datos.** *(`ProyectoRISCV.3`)*
-4. Unidad de control (máquina de estados).
+4. **Unidad de control (máquina de estados).** *(`ProyectoRISCV.4`)*
 5. Módulo superior `riscv_top` y simulación del programa completo con el dump de memoria.
 
 ## Etapa 1: módulos básicos
@@ -190,10 +190,68 @@ Si `tb_instr_mem` sale con todas las instrucciones en 0, Vivado no encontró `pr
 copiarlo a `ProyectoRISCV.3.sim/sim_1/behav/xsim/` y volver a simular. La advertencia
 *"Not enough words in the file"* es normal porque el programa ocupa 36 de las 256 posiciones.
 
+## Etapa 4: unidad de control
+
+Esta etapa agrega la unidad de control: el bloque que dirige a todos los demás. Mientras que la
+ruta de datos (etapas 1 a 3) tiene los caminos por donde pueden viajar los datos, la unidad de
+control decide en cada ciclo cuáles se usan. El proyecto `ProyectoRISCV.4` contiene los módulos de
+las etapas 1 a 3 sin cambios más el nuevo.
+
+| Módulo | Qué hace | Dónde se usa en el procesador |
+|---|---|---|
+| `control_unit.v` | Máquina de estados con un registro de estado de 3 bits; según el estado, el `opcode` y `funct3` genera todas las señales de control y decide los saltos condicionales | Controla todos los registros, multiplexores, la ALU y las memorias |
+
+Estados de la máquina y qué instrucciones pasa por cada uno:
+
+| Estado | Qué ocurre | Siguiente estado |
+|---|---|---|
+| S0 Fetch | El IR guarda la instrucción (`IRWrite` = 1) | S1 |
+| S1 Decode | Se leen rs1 y rs2 hacia A y B y se arma el inmediato | S4 para `lui` y `jal`; S2 para el resto; HALT si el opcode no es válido |
+| S2 Execute | La ALU calcula el resultado, la dirección o la comparación | Branch: escribe el PC y vuelve a S0. `lw`, `sw`, `sb`: S3. Resto: S4 |
+| S3 Memory | Se lee o escribe la memoria de datos | `sw`, `sb`: escribe memoria y PC, vuelve a S0. `lw`: S4 |
+| S4 Writeback | Se escribe rd y se actualiza el PC | S0 |
+| HALT | Opcode no soportado: el procesador se detiene | HALT (sale solo con reset) |
+
+Así, cada instrucción tarda solo los ciclos que necesita: 3 los saltos condicionales, 3 `lui` y
+`jal`, 4 `sw`, `sb` y las aritméticas con inmediato, y 5 `lw`.
+
+Señales que genera:
+
+| Señal | Códigos |
+|---|---|
+| `PCWrite`, `IRWrite`, `RegWrite`, `MemWrite` | Habilitan la escritura del PC, IR, banco de registros y memoria de datos |
+| `PCSrc` | 00 PC + 4 · 01 PC + Imm · 10 destino de `jalr` |
+| `ResultSrc` | 00 ALUOut · 01 MDR · 10 PC + 4 · 11 ImmExt |
+| `ImmSrc` | 000 I · 001 S · 010 B · 011 U · 100 J |
+| `ALUSrc` | 0 registro B · 1 inmediato |
+| `ALUControl` | 000 suma · 001 resta · 010 AND · 011 SLL |
+| `StoreByte` | 1 si es `sb` (funct3 = 000) |
+
+Por qué se necesita:
+
+- **Es lo que hace multiciclo al procesador.** La ruta de datos sola no sabe en qué paso de la
+  instrucción está; la máquina de estados reparte cada instrucción en varios ciclos y activa solo
+  las escrituras que tocan en cada uno.
+- **Decide los saltos.** La lógica de salto está dentro de la unidad de control: con la bandera
+  `zero` de la ALU, `bne` salta si los registros son distintos (`zero` = 0); con la bandera `lt`,
+  `bge` salta si rs1 ≥ rs2 (`lt` = 0). Si salta, elige PC + Imm; si no, PC + 4.
+- **Protege contra instrucciones no soportadas.** Un opcode que no es de las 11 instrucciones lleva
+  al estado HALT en lugar de ejecutar algo incorrecto.
+
+### Testbench de esta etapa
+
+| Testbench | Qué prueba |
+|---|---|
+| `tb_control_unit.v` | 14 casos: para cada instrucción revisa ciclo a ciclo el estado y las escrituras (`PCWrite`, `IRWrite`, `RegWrite`, `MemWrite`) y en el último ciclo `PCSrc`, `ResultSrc`, `ImmSrc`, `ALUSrc`, `ALUControl` y `StoreByte`. Prueba `addi`, `andi`, `slli`, `lw`, `sw`, `sb`, `bne` y `bge` (saltando y sin saltar), `lui`, `jal`, `jalr` y un opcode inválido que lleva a HALT y sale con reset |
+
+El testbench se simuló en Vivado y termina en `TODAS LAS PRUEBAS PASARON`, igual que los nueve de
+las etapas anteriores, que siguen incluidos en este proyecto. La captura de la consola está en
+[`resultados/etapa4/`](resultados/etapa4).
+
 ## Cómo abrir y simular
 
 1. Abrir el `.xpr` de la etapa con Vivado 2019 (parte `xc7a35tcpg236-1`). La carpeta más reciente
-   (`ProyectoRISCV.3/ProyectoRISCV.3.xpr`) incluye todos los módulos hasta esa etapa.
+   (`ProyectoRISCV.4/ProyectoRISCV.4.xpr`) incluye todos los módulos hasta esa etapa.
 2. En **Simulation Sources**, clic derecho sobre el testbench → **Set as Top**.
 3. **Run Simulation → Run Behavioral Simulation**.
 4. En la consola Tcl debe aparecer `TODAS LAS PRUEBAS PASARON`.
@@ -224,7 +282,14 @@ ProyectoRISCV.3/                            etapa 3: etapas 1 y 2 + banco de reg
 └── ProyectoRISCV.3.srcs/
     ├── sources_1/imports/Desktop/
     └── sim_1/imports/Desktop/              testbenches y programa.hex
-resultados/etapa3/                          capturas de la consola de Vivado y dump de tb_data_mem
+ProyectoRISCV.4/                            etapa 4: etapas 1 a 3 + unidad de control
+├── ProyectoRISCV.4.xpr
+└── ProyectoRISCV.4.srcs/
+    ├── sources_1/imports/Desktop/
+    └── sim_1/imports/Desktop/
+resultados/
+├── etapa3/                                 capturas de la consola de Vivado y dump de tb_data_mem
+└── etapa4/                                 captura de la consola de Vivado de tb_control_unit
 ```
 
 Cada carpeta `ProyectoRISCV.N` es el proyecto completo hasta la etapa N, así se puede abrir y
