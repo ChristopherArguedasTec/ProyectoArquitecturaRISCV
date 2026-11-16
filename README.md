@@ -65,7 +65,7 @@ testbench antes de conectarlos:
 
 1. **Módulos básicos:** registros, sumador y multiplexores. *(`ProyectoRISCV.1`)*
 2. **ALU y generador de inmediatos.** *(`ProyectoRISCV.2`)*
-3. Banco de registros, memoria de instrucciones y memoria de datos.
+3. **Banco de registros, memoria de instrucciones y memoria de datos.** *(`ProyectoRISCV.3`)*
 4. Unidad de control (máquina de estados).
 5. Módulo superior `riscv_top` y simulación del programa completo con el dump de memoria.
 
@@ -148,10 +148,52 @@ Con esta etapa la ruta de datos ya soporta los cinco formatos que usa el program
 Se simularon en Vivado: los dos testbenches indican `TODAS LAS PRUEBAS PASARON`, igual que los
 cuatro de la etapa 1, que siguen incluidos en este proyecto.
 
+## Etapa 3: banco de registros y memorias
+
+Esta etapa agrega los tres bloques que guardan información: el banco de registros, donde viven los
+valores con los que trabaja el programa, y las dos memorias, una con el programa y otra con los
+datos. También se agrega `programa.hex`, que es el programa en C ya compilado. El proyecto
+`ProyectoRISCV.3` contiene los módulos de las etapas 1 y 2 sin cambios más los nuevos.
+
+| Módulo | Qué hace | Dónde se usa en el procesador |
+|---|---|---|
+| `regfile.v` | 32 registros de 32 bits con dos lecturas combinacionales (rs1, rs2) y una escritura síncrona (rd) habilitada por `RegWrite`; x0 siempre vale 0 y el reset pone todo en 0 | Estado Decode (lee rs1 y rs2 hacia A y B) y Writeback (escribe el resultado en rd) |
+| `instr_mem.v` | Memoria de 256 palabras que se carga con `$readmemh` desde `programa.hex`; entrega la instrucción de la dirección del PC (índice `addr[9:2]`) | Estado Fetch: la instrucción va al IR |
+| `data_mem.v` | Memoria de 1024 palabras iniciada en 0, lectura combinacional y escritura síncrona; con `StoreByte` = 1 solo escribe el byte que indica `addr[1:0]` | Estado Memory: `lw` lee hacia el MDR; `sw` y `sb` escriben el registro B |
+| `programa.hex` | Las 36 instrucciones de `main` en hexadecimal, una por línea, tomadas de la salida de `riscv32-unknown-elf-gcc` | Contenido de la memoria de instrucciones; es lo único que se cambia al evaluar |
+
+Por qué se necesitan:
+
+- **Banco de registros.** Todas las instrucciones del programa leen o escriben registros. El reset en
+  0 hace que `sp` arranque en 0, y el registro x0 fijo en 0 permite instrucciones como
+  `sw zero,-24(s0)` (`i = 0`).
+- **Memoria de instrucciones.** Guarda el programa. Se separa de la de datos para que el Fetch y el
+  acceso a datos no compitan por la misma memoria.
+- **Memoria de datos.** Las variables del programa (`r`, `a`, `i`, `b`) viven en la pila. La memoria
+  usa los 12 bits bajos de la dirección, así que la pila que empieza en `sp = 0` y crece hacia abajo
+  (0xFFFFFFE0…) cae en las direcciones 0xFE0 a 0xFFC. La escritura por byte es necesaria para `sb`,
+  que guarda el `char a` en 0xFE3 sin modificar los otros tres bytes de la palabra.
+
+### Testbenches de esta etapa
+
+| Testbench | Qué prueba |
+|---|---|
+| `tb_regfile.v` | 11 casos: reset en 0, escritura y lectura por los dos puertos con valores del programa (b = 33, r = 0xC7DF, sp = −32), x0 siempre en 0, `we = 0` no escribe, la escritura no se ve antes del flanco y el reset borra |
+| `tb_instr_mem.v` | 10 casos: compara direcciones del programa con el desensamblado (primera instrucción, `lui`, `sb`, `bnez`, `bge`, `ret` en 0x8C), una dirección después del programa (debe dar 0), la última palabra y una dirección no alineada |
+| `tb_data_mem.v` | 11 casos: `sw` de `i` y de `r` con direcciones de la pila, `sb` de 'c' y luego 'b' en 0xFE3, `sb` en cada uno de los cuatro bytes de una palabra y escritura con `we = 0`; al final genera el dump completo en `dump_data_mem.txt` |
+
+Los tres testbenches se simularon en Vivado y terminan en `TODAS LAS PRUEBAS PASARON`, igual que los
+seis de las etapas 1 y 2, que siguen incluidos en este proyecto. Las capturas de la consola y el
+dump generado están en [`resultados/etapa3/`](resultados/etapa3).
+
+Si `tb_instr_mem` sale con todas las instrucciones en 0, Vivado no encontró `programa.hex`: hay que
+copiarlo a `ProyectoRISCV.3.sim/sim_1/behav/xsim/` y volver a simular. La advertencia
+*"Not enough words in the file"* es normal porque el programa ocupa 36 de las 256 posiciones.
+
 ## Cómo abrir y simular
 
 1. Abrir el `.xpr` de la etapa con Vivado 2019 (parte `xc7a35tcpg236-1`). La carpeta más reciente
-   (`ProyectoRISCV.2/ProyectoRISCV.2.xpr`) incluye todos los módulos hasta esa etapa.
+   (`ProyectoRISCV.3/ProyectoRISCV.3.xpr`) incluye todos los módulos hasta esa etapa.
 2. En **Simulation Sources**, clic derecho sobre el testbench → **Set as Top**.
 3. **Run Simulation → Run Behavioral Simulation**.
 4. En la consola Tcl debe aparecer `TODAS LAS PRUEBAS PASARON`.
@@ -177,6 +219,12 @@ ProyectoRISCV.2/                            etapa 2: etapa 1 + ALU y generador d
 └── ProyectoRISCV.2.srcs/
     ├── sources_1/imports/Desktop/
     └── sim_1/imports/Desktop/
+ProyectoRISCV.3/                            etapa 3: etapas 1 y 2 + banco de registros y memorias
+├── ProyectoRISCV.3.xpr
+└── ProyectoRISCV.3.srcs/
+    ├── sources_1/imports/Desktop/
+    └── sim_1/imports/Desktop/              testbenches y programa.hex
+resultados/etapa3/                          capturas de la consola de Vivado y dump de tb_data_mem
 ```
 
 Cada carpeta `ProyectoRISCV.N` es el proyecto completo hasta la etapa N, así se puede abrir y
