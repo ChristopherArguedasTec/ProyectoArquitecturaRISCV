@@ -339,7 +339,8 @@ correctamente el código del enunciado. La captura de la consola y el dump compl
 
 Las iteraciones del diagrama están en [`docs/diagramas/`](docs/diagramas/README.md), cada una con
 su explicación. La primera iteración es una ruta de datos de un solo ciclo para los tipos I y S;
-sus limitaciones se corrigen en el diseño multiciclo.
+la segunda es el diseño multiciclo final, que ejecuta los cinco formatos y es el que se
+implementó en Verilog.
 
 ## Estructura del repositorio
 
