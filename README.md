@@ -67,7 +67,7 @@ testbench antes de conectarlos:
 2. **ALU y generador de inmediatos.** *(`ProyectoRISCV.2`)*
 3. **Banco de registros, memoria de instrucciones y memoria de datos.** *(`ProyectoRISCV.3`)*
 4. **Unidad de control (máquina de estados).** *(`ProyectoRISCV.4`)*
-5. Módulo superior `riscv_top` y simulación del programa completo con el dump de memoria.
+5. **Módulo superior `riscv_top` y simulación del programa completo con el dump de memoria.** *(`ProyectoRISCV.5`)*
 
 ## Etapa 1: módulos básicos
 
@@ -248,10 +248,88 @@ El testbench se simuló en Vivado y termina en `TODAS LAS PRUEBAS PASARON`, igua
 las etapas anteriores, que siguen incluidos en este proyecto. La captura de la consola está en
 [`resultados/etapa4/`](resultados/etapa4).
 
+## Etapa 5: procesador completo
+
+Esta etapa une todo. El módulo `riscv_top` instancia los doce módulos de las etapas anteriores y
+los conecta según el diagrama multiciclo, y su testbench ejecuta el programa en C completo. El
+proyecto `ProyectoRISCV.5` contiene los módulos de las etapas 1 a 4 sin cambios más los nuevos, y es
+la versión final del procesador.
+
+| Módulo | Qué hace | Papel en el procesador |
+|---|---|---|
+| `riscv_top.v` | Instancia y conecta PC, sumadores, memorias, IR, banco de registros, A, B, generador de inmediatos, multiplexores, ALU, ALUOut, MDR y unidad de control | Módulo principal: es el procesador que se evalúa |
+
+Entradas y salidas:
+
+| Puerto | Dirección | Qué es |
+|---|---|---|
+| `clk`, `reset` | Entrada | Las únicas dos entradas, como pide el enunciado |
+| `mem_we`, `mem_byte`, `mem_addr`, `mem_wdata` | Salida | Cada escritura en la memoria de datos (`sw` / `sb`): muestra cómo cambian las variables del programa |
+| `reg_we`, `reg_wa`, `reg_wd` | Salida | Cada escritura en el banco de registros |
+| `done` | Salida | Vale 1 en el ciclo en que se ejecuta el `ret` de `main` |
+
+Por qué tiene salidas: la regla del enunciado limita solo las entradas. Las salidas permiten ver el
+resultado en las formas de onda y detectar el fin del programa sin entrar a señales internas, y
+evitan que la síntesis de Vivado elimine el procesador (un módulo sin salidas se optimiza hasta
+quedar vacío).
+
+Detalles de la conexión:
+
+- El destino de `jalr` es `{ALUOut[31:1], 0}`, la tercera entrada del multiplexor del PC.
+- `programa.hex` se pasa a la memoria de instrucciones con el parámetro `PROGRAMA`; para evaluar
+  otro programa solo se cambia ese archivo.
+- `done` se calcula como `PCWrite` y opcode de `jalr`: en `jalr` el PC solo se escribe en
+  Writeback, que es el ciclo del `ret`. Como `ra` vale 0 desde el reset, después del `ret` el PC
+  vuelve a 0 y `main` empieza de nuevo; por eso el dump se toma cuando `done` = 1.
+
+### Testbench de esta etapa
+
+| Testbench | Qué prueba |
+|---|---|
+| `tb_riscv_top.v` | Aplica reset, ejecuta el programa hasta que `done` = 1, imprime cada escritura a memoria, genera el dump de las 1024 palabras en `dump_memoria_datos.txt` y compara con el resultado esperado: memoria (`a`, `r`, `i`, `b`, `s0` y `ra` guardados), registros finales (`sp`, `s0`, `a4`, `a5`) y número de ciclos |
+
+La simulación necesita 1930 ns, más que los 1000 ns que Vivado simula por defecto: al abrirse hay
+que presionar **Run All** (o poner `xsim.simulate.runtime` en `all` en *Settings → Simulation*).
+
+### Resultado
+
+Se simuló en Vivado: el programa termina en **191 ciclos y 47 instrucciones** y el testbench indica
+`EL PROGRAMA CORRIO CORRECTAMENTE`. Escrituras a memoria durante la ejecución:
+
+| Ciclo | Instrucción | Dirección | Valor | Significado en C |
+|---|---|---|---|---|
+| 7 | `sw` | 0xFFC | 0x00000000 | Se guarda `ra` (prólogo) |
+| 11 | `sw` | 0xFF8 | 0x00000000 | Se guarda `s0` (prólogo) |
+| 27 | `sw` | 0xFE4 | 0x0000C7DF | `r = 0xC7DF` |
+| 35 | `sb` | 0xFE3 | 0x63 | `a = 'c'` |
+| 43 | `sw` | 0xFEC | 0x00000021 | `b = 33` |
+| 47 | `sw` | 0xFE8 | 0x00000000 | `i = 0` |
+| 77 | `sb` | 0xFE3 | 0x62 | `a = 'b'` (vuelta `i = 0`) |
+| 93 | `sw` | 0xFE8 | 0x00000001 | `i = 1` |
+| 127 | `sw` | 0xFEC | 0x00000042 | `b = b << 1 = 66` (vuelta `i = 1`) |
+| 139 | `sw` | 0xFEC | 0x00000002 | `b = b & 0xF = 2` |
+| 153 | `sw` | 0xFE8 | 0x00000002 | `i = 2`, termina el `for` |
+
+Estado final de la memoria de datos (dump):
+
+| Dirección | Valor | Variable |
+|---|---|---|
+| 0xFE0 | 0x62000000 | `a = 'b'` (byte 0xFE3) |
+| 0xFE4 | 0x0000C7DF | `r` |
+| 0xFE8 | 0x00000002 | `i` |
+| 0xFEC | 0x00000002 | `b` |
+| 0xFF8 | 0x00000000 | `s0` guardado |
+| 0xFFC | 0x00000000 | `ra` guardado |
+
+El resto de la memoria queda en 0. Los registros al terminar son `sp = 0`, `s0 = 0`, `a4 = 2` y
+`a5 = 0`. Estos valores coinciden con lo que calcula el programa en C, así que el procesador ejecuta
+correctamente el código del enunciado. La captura de la consola y el dump completo están en
+[`resultados/etapa5/`](resultados/etapa5).
+
 ## Cómo abrir y simular
 
 1. Abrir el `.xpr` de la etapa con Vivado 2019 (parte `xc7a35tcpg236-1`). La carpeta más reciente
-   (`ProyectoRISCV.4/ProyectoRISCV.4.xpr`) incluye todos los módulos hasta esa etapa.
+   (`ProyectoRISCV.5/ProyectoRISCV.5.xpr`) incluye todos los módulos hasta esa etapa.
 2. En **Simulation Sources**, clic derecho sobre el testbench → **Set as Top**.
 3. **Run Simulation → Run Behavioral Simulation**.
 4. En la consola Tcl debe aparecer `TODAS LAS PRUEBAS PASARON`.
@@ -287,9 +365,15 @@ ProyectoRISCV.4/                            etapa 4: etapas 1 a 3 + unidad de co
 └── ProyectoRISCV.4.srcs/
     ├── sources_1/imports/Desktop/
     └── sim_1/imports/Desktop/
+ProyectoRISCV.5/                            etapa 5: procesador completo (versión final)
+├── ProyectoRISCV.5.xpr
+└── ProyectoRISCV.5.srcs/
+    ├── sources_1/imports/Desktop/          13 módulos, Top = riscv_top
+    └── sim_1/imports/Desktop/              11 testbenches y programa.hex
 resultados/
 ├── etapa3/                                 capturas de la consola de Vivado y dump de tb_data_mem
-└── etapa4/                                 captura de la consola de Vivado de tb_control_unit
+├── etapa4/                                 captura de la consola de Vivado de tb_control_unit
+└── etapa5/                                 captura de tb_riscv_top y dump_memoria_datos.txt
 ```
 
 Cada carpeta `ProyectoRISCV.N` es el proyecto completo hasta la etapa N, así se puede abrir y
