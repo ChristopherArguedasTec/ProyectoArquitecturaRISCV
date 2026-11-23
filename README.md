@@ -252,8 +252,8 @@ las etapas anteriores, que siguen incluidos en este proyecto. La captura de la c
 
 Esta etapa une todo. El módulo `riscv_top` instancia los doce módulos de las etapas anteriores y
 los conecta según el diagrama multiciclo, y su testbench ejecuta el programa en C completo. El
-proyecto `ProyectoRISCV.5` contiene los módulos de las etapas 1 a 4 sin cambios más los nuevos, y es
-la versión final del procesador.
+proyecto `ProyectoRISCV.5` contiene los módulos de las etapas 1 a 4 sin cambios más los nuevos. La
+versión definitiva para entregar es [`ProyectoRISCV.Final`](#versión-final-proyectoriscvfinal).
 
 | Módulo | Qué hace | Papel en el procesador |
 |---|---|---|
@@ -326,13 +326,59 @@ El resto de la memoria queda en 0. Los registros al terminar son `sp = 0`, `s0 =
 correctamente el código del enunciado. La captura de la consola y el dump completo están en
 [`resultados/etapa5/`](resultados/etapa5).
 
+## Versión final: `ProyectoRISCV.Final`
+
+`ProyectoRISCV.Final` es el proyecto definitivo para la entrega. Se creó directamente en
+**Vivado 2019.2** (parte `xc7a35tcpg236-1`) y contiene el procesador completo: los 13 módulos, los
+11 testbenches y `programa.hex`. El código es el mismo de las etapas 1 a 5; los cambios respecto a
+`ProyectoRISCV.5` son solo de presentación:
+
+- **Comentarios sin tildes ni caracteres especiales**, para que el editor de Vivado los muestre
+  bien.
+- **Comentarios revisados y completados**: cada módulo explica su funcionalidad, entradas, salidas
+  y por qué existe, y cada testbench su objetivo, estímulos y resultados esperados. Se corrigió el
+  encabezado de `riscv_top` (que ahora menciona la señal `done`) y se precisaron los de `mux4`,
+  `reg_noen`, `instr_mem` y `tb_riscv_top`.
+- **Tiempo de simulación configurado en 3000 ns** (`xsim.simulate.runtime`), para que
+  `tb_riscv_top` termine sin tener que presionar *Run All*.
+- **Top de diseño `riscv_top` y Top de simulación `tb_riscv_top`.**
+
+Organización de los archivos dentro de `ProyectoRISCV.Final.srcs`:
+
+```
+sources_1/imports/RISCV_sin_tildes/
+├── Etapas_1_y_2/design_sources/   reg_en, reg_noen, sumador, mux2, mux3, mux4, alu, imm_gen
+├── Etapa3/design_sources/         regfile, instr_mem, data_mem
+├── Etapa4/design_sources/         control_unit
+└── Etapa5/design_sources/         riscv_top
+sim_1/imports/RISCV_sin_tildes/
+├── Etapas_1_y_2/simulation_sources/   tb_reg_en, tb_reg_noen, tb_sumador, tb_mux, tb_alu, tb_imm_gen
+├── Etapa3/simulation_sources/         tb_regfile, tb_instr_mem, tb_data_mem
+├── Etapa4/simulation_sources/         tb_control_unit
+└── Etapa5/simulation_sources/         tb_riscv_top
+sim_1/imports/simulation_sources/programa.hex
+```
+
+Resultado en Vivado 2019.2: los 11 testbenches terminan en `TODAS LAS PRUEBAS PASARON` y
+`tb_riscv_top` en `EL PROGRAMA CORRIO CORRECTAMENTE`, con 191 ciclos y 47 instrucciones. El dump
+generado por esta versión está en [`resultados/final/dump_memoria_datos.txt`](resultados/final) y
+coincide con el resultado del programa en C:
+
+| Variable en C | Valor en C | Dirección | Valor en el dump |
+|---|---|---|---|
+| `a` | `'b'` (0x62) | 0xFE3 (palabra 0xFE0) | 0x62000000 |
+| `r` | 0xC7DF | 0xFE4 | 0x0000C7DF |
+| `i` | 2 | 0xFE8 | 0x00000002 |
+| `b` | 2 | 0xFEC | 0x00000002 |
+
 ## Cómo abrir y simular
 
-1. Abrir el `.xpr` de la etapa con Vivado 2019 (parte `xc7a35tcpg236-1`). La carpeta más reciente
-   (`ProyectoRISCV.5/ProyectoRISCV.5.xpr`) incluye todos los módulos hasta esa etapa.
+1. Abrir `ProyectoRISCV.Final/ProyectoRISCV.Final.xpr` con Vivado 2019.2 (parte `xc7a35tcpg236-1`).
+   Para ver un avance intermedio, abrir el `.xpr` de la carpeta `ProyectoRISCV.N` de esa etapa.
 2. En **Simulation Sources**, clic derecho sobre el testbench → **Set as Top**.
 3. **Run Simulation → Run Behavioral Simulation**.
-4. En la consola Tcl debe aparecer `TODAS LAS PRUEBAS PASARON`.
+4. En la consola Tcl debe aparecer `TODAS LAS PRUEBAS PASARON` (o `EL PROGRAMA CORRIO CORRECTAMENTE`
+   en `tb_riscv_top`). El dump queda en `ProyectoRISCV.Final.sim/sim_1/behav/xsim/dump_memoria_datos.txt`.
 5. Cerrar la simulación antes de cambiar el Top y correr el siguiente testbench.
 
 ## Diagramas
@@ -366,7 +412,7 @@ ProyectoRISCV.4/                            etapa 4: etapas 1 a 3 + unidad de co
 └── ProyectoRISCV.4.srcs/
     ├── sources_1/imports/Desktop/
     └── sim_1/imports/Desktop/
-ProyectoRISCV.5/                            etapa 5: procesador completo (versión final)
+ProyectoRISCV.5/                            etapa 5: procesador completo
 ├── ProyectoRISCV.5.xpr
 └── ProyectoRISCV.5.srcs/
     ├── sources_1/imports/Desktop/          13 módulos, Top = riscv_top
@@ -374,7 +420,11 @@ ProyectoRISCV.5/                            etapa 5: procesador completo (versi�
 resultados/
 ├── etapa3/                                 capturas de la consola de Vivado y dump de tb_data_mem
 ├── etapa4/                                 captura de la consola de Vivado de tb_control_unit
-└── etapa5/                                 captura de tb_riscv_top y dump_memoria_datos.txt
+├── etapa5/                                 captura de tb_riscv_top y dump_memoria_datos.txt
+└── final/                                  dump_memoria_datos.txt de ProyectoRISCV.Final
+ProyectoRISCV.Final/                        versión definitiva para la entrega (Vivado 2019.2)
+├── ProyectoRISCV.Final.xpr                 Top: riscv_top; simulación: tb_riscv_top
+└── ProyectoRISCV.Final.srcs/               13 módulos, 11 testbenches y programa.hex
 ```
 
 Cada carpeta `ProyectoRISCV.N` es el proyecto completo hasta la etapa N, así se puede abrir y
