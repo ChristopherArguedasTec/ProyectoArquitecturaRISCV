@@ -330,7 +330,7 @@ correctamente el código del enunciado. La captura de la consola y el dump compl
 
 `ProyectoRISCV.Final` es el proyecto definitivo para la entrega. Se creó directamente en
 **Vivado 2019.2** (parte `xc7a35tcpg236-1`) y contiene el procesador completo: los 13 módulos, los
-11 testbenches y `programa.hex`. El código es el mismo de las etapas 1 a 5; los cambios respecto a
+13 testbenches (uno por módulo) y `programa.hex`. El código es el mismo de las etapas 1 a 5; los cambios respecto a
 `ProyectoRISCV.5` son solo de presentación:
 
 - **Comentarios sin tildes ni caracteres especiales**, para que el editor de Vivado los muestre
@@ -342,6 +342,10 @@ correctamente el código del enunciado. La captura de la consola y el dump compl
 - **Tiempo de simulación configurado en 3000 ns** (`xsim.simulate.runtime`), para que
   `tb_riscv_top` termine sin tener que presionar *Run All*.
 - **Top de diseño `riscv_top` y Top de simulación `tb_riscv_top`.**
+- **Un testbench por multiplexor.** El `tb_mux.v` de la etapa 1, que probaba los tres multiplexores
+  juntos, se separó en `tb_mux2.v`, `tb_mux3.v` y `tb_mux4.v`, para que cada módulo tenga su propio
+  archivo de prueba como pide el enunciado. Las pruebas son las mismas: cada valor de `sel`, el
+  valor por defecto de `mux3` (sel = 11 entrega d0) y que la salida sigue a la entrada.
 
 Organización de los archivos dentro de `ProyectoRISCV.Final.srcs`:
 
@@ -352,14 +356,14 @@ sources_1/imports/RISCV_sin_tildes/
 ├── Etapa4/design_sources/         control_unit
 └── Etapa5/design_sources/         riscv_top
 sim_1/imports/RISCV_sin_tildes/
-├── Etapas_1_y_2/simulation_sources/   tb_reg_en, tb_reg_noen, tb_sumador, tb_mux, tb_alu, tb_imm_gen
+├── Etapas_1_y_2/simulation_sources/   tb_reg_en, tb_reg_noen, tb_sumador, tb_alu, tb_imm_gen
 ├── Etapa3/simulation_sources/         tb_regfile, tb_instr_mem, tb_data_mem
 ├── Etapa4/simulation_sources/         tb_control_unit
 └── Etapa5/simulation_sources/         tb_riscv_top
-sim_1/imports/simulation_sources/programa.hex
+sim_1/imports/simulation_sources/        tb_mux2, tb_mux3, tb_mux4 y programa.hex
 ```
 
-Resultado en Vivado 2019.2: los 11 testbenches terminan en `TODAS LAS PRUEBAS PASARON` y
+Resultado en Vivado 2019.2: los 13 testbenches terminan en `TODAS LAS PRUEBAS PASARON` y
 `tb_riscv_top` en `EL PROGRAMA CORRIO CORRECTAMENTE`, con 191 ciclos y 47 instrucciones. El dump
 generado por esta versión está en [`resultados/final/dump_memoria_datos.txt`](resultados/final) y
 coincide con el resultado del programa en C:
@@ -429,7 +433,7 @@ resultados/
 └── final/                                  dump_memoria_datos.txt de ProyectoRISCV.Final
 ProyectoRISCV.Final/                        versión definitiva para la entrega (Vivado 2019.2)
 ├── ProyectoRISCV.Final.xpr                 Top: riscv_top; simulación: tb_riscv_top
-└── ProyectoRISCV.Final.srcs/               13 módulos, 11 testbenches y programa.hex
+└── ProyectoRISCV.Final.srcs/               13 módulos, 13 testbenches y programa.hex
 ```
 
 Cada carpeta `ProyectoRISCV.N` es el proyecto completo hasta la etapa N, así se puede abrir y
