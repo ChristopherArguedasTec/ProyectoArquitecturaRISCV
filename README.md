@@ -385,8 +385,9 @@ coincide con el resultado del programa en C:
 
 Las iteraciones del diagrama están en [`docs/diagramas/`](docs/diagramas/README.md), cada una con
 su explicación. La primera iteración es una ruta de datos de un solo ciclo para los tipos I y S;
-la segunda es el diseño multiciclo final, que ejecuta los cinco formatos y es el que se
-implementó en Verilog.
+la segunda es el diseño multiciclo, que ejecuta los cinco formatos y es el que se implementó en
+Verilog. La tercera iteración, `iteracion3_final.png`, es el diagrama final de la entrega: la misma
+ruta de datos de la segunda con la leyenda del reloj corregida.
 
 Sobre el diagrama final hay además un diagrama por decodificación (tipos I aritmética, I carga,
 I salto, S, B, U y J) con el camino que usa cada formato resaltado, en

@@ -1,7 +1,8 @@
 # Diagramas del diseño
 
 Esta carpeta guarda las iteraciones del diagrama de la microarquitectura, en orden. Las versiones
-anteriores se conservan para documentar cómo evolucionó el diseño.
+anteriores se conservan para documentar cómo evolucionó el diseño; el diagrama final de la entrega es
+`iteracion3_final.png`.
 
 ## Iteración 1: ruta de datos de un solo ciclo para tipos I y S
 
@@ -61,7 +62,8 @@ Archivo: `iteracion2_multiciclo.png`
 
 ### Intención
 
-Es el diagrama del diseño final y el que se implementó en Verilog (`ProyectoRISCV.5`). Corrige las
+Es la ruta de datos del diseño final y la que se implementó en Verilog (`ProyectoRISCV.5`). Su única
+diferencia con la iteración 3 es la leyenda del reloj (ver la nota al final de esta sección). Corrige las
 limitaciones de la iteración 1: el procesador pasa a ser **multiciclo** y ejecuta las 11
 instrucciones del programa en sus cinco formatos (I, S, B, U y J). Cada instrucción se reparte en
 varios ciclos (Fetch, Decode, Execute, Memory, Writeback) y la unidad de control, una máquina de
@@ -109,17 +111,36 @@ ALU out y MDR (`reg_noen`), sumadores (`sumador`), multiplexores (`mux2`, `mux3`
 Memory (`instr_mem`), Memoria de Registros (`regfile`), Generador de Inmediatos (`imm_gen`), ALU
 (`alu`), Memoria de Datos (`data_mem`) y Unidad de Control (`control_unit`).
 
-Nota sobre la leyenda del reloj: en la implementación solo los elementos que guardan estado usan el
-reloj: los registros azules (PC, IR, A, B, ALU out, MDR), la escritura del banco de registros y de la
-memoria de datos, y el registro de estado de la unidad de control. La ALU, los sumadores, los
-multiplexores, el generador de inmediatos y las lecturas de las memorias son combinacionales.
+Nota sobre la leyenda del reloj: este diagrama dice que todos los bloques blancos y azules están
+conectados al reloj, pero en la implementación solo usan reloj los elementos que guardan estado: los
+registros azules (PC, IR, A, B, ALU out, MDR), la escritura del banco de registros y de la memoria de
+datos, y el registro de estado de la unidad de control. La ALU, los sumadores, los multiplexores, el
+generador de inmediatos, la memoria de instrucciones y las lecturas de las memorias son
+combinacionales. Esto se corrige en la iteración 3.
+
+## Iteración 3: diagrama final
+
+Archivo: `iteracion3_final.png`
+
+![Iteración 3](iteracion3_final.png)
+
+Es el diagrama final de la entrega. La ruta de datos, la unidad de control y todas las señales son
+las mismas de la iteración 2; solo cambia la leyenda del reloj, que ahora coincide con el Verilog:
+
+- **Con reloj:** los registros azules (PC e IR son `reg_en`; A, B, ALU out y MDR son `reg_noen`), la
+  escritura del banco de registros (`regfile`) y de la memoria de datos (`data_mem`), y el registro
+  `state` de la máquina de estados (`control_unit`).
+- **Sin reloj (combinacionales):** ALU, sumadores, multiplexores, generador de inmediatos, memoria de
+  instrucciones (`instr_mem` no tiene entrada de reloj) y la lectura del banco de registros y de la
+  memoria de datos.
 
 ## Diagramas por decodificación
 
 Carpeta: [`por_decodificacion/`](por_decodificacion)
 
-Sobre el diagrama de la iteración 2 se hizo un diagrama por cada decodificación (formato de
-instrucción), como recomienda la rúbrica. En cada uno el resto del circuito queda atenuado y se
+Sobre la ruta de datos final (iteraciones 2 y 3, que solo difieren en la leyenda del reloj) se hizo
+un diagrama por cada decodificación (formato de instrucción), como recomienda la rúbrica. Estos
+diagramas no llevan la leyenda del reloj. En cada uno el resto del circuito queda atenuado y se
 resalta solo lo que usa ese formato:
 
 - **Naranja:** camino de datos.
