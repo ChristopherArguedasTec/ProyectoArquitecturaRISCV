@@ -330,22 +330,37 @@ correctamente el código del enunciado. La captura de la consola y el dump compl
 
 `ProyectoRISCV.Final` es el proyecto definitivo para la entrega. Se creó directamente en
 **Vivado 2019.2** (parte `xc7a35tcpg236-1`) y contiene el procesador completo: los 13 módulos, los
-13 testbenches (uno por módulo) y `programa.hex`. El código es el mismo de las etapas 1 a 5; los cambios respecto a
-`ProyectoRISCV.5` son solo de presentación:
+13 testbenches (uno por módulo) y `programa.hex`.
 
-- **Comentarios sin tildes ni caracteres especiales**, para que el editor de Vivado los muestre
-  bien.
-- **Comentarios revisados y completados**: cada módulo explica su funcionalidad, entradas, salidas
-  y por qué existe, y cada testbench su objetivo, estímulos y resultados esperados. Se corrigió el
-  encabezado de `riscv_top` (que ahora menciona la señal `done`) y se precisaron los de `mux4`,
-  `reg_noen`, `instr_mem` y `tb_riscv_top`.
-- **Tiempo de simulación configurado en 3000 ns** (`xsim.simulate.runtime`), para que
-  `tb_riscv_top` termine sin tener que presionar *Run All*.
-- **Top de diseño `riscv_top` y Top de simulación `tb_riscv_top`.**
-- **Un testbench por multiplexor.** El `tb_mux.v` de la etapa 1, que probaba los tres multiplexores
-  juntos, se separó en `tb_mux2.v`, `tb_mux3.v` y `tb_mux4.v`, para que cada módulo tenga su propio
-  archivo de prueba como pide el enunciado. Las pruebas son las mismas: cada valor de `sel`, el
-  valor por defecto de `mux3` (sel = 11 entrega d0) y que la salida sigue a la entrada.
+**La lógica del procesador es la misma de `ProyectoRISCV.5`:** ninguna línea de código Verilog
+cambió en ningún módulo ni testbench. Los cambios son estos, en orden de importancia:
+
+1. **Comentarios corregidos y completados.** Cada módulo explica su funcionalidad, entradas,
+   salidas y por qué existe, y cada testbench su objetivo, estímulos y resultados esperados, como
+   pide el enunciado. Correcciones puntuales:
+
+   | Archivo | Corrección |
+   |---|---|
+   | `riscv_top` | El encabezado menciona el cable que pone en cero el bit 0 del destino de `jalr` y la señal `done` |
+   | `mux4` | Se aclara que el `default` solo actúa en simulación, si `sel` vale x/z |
+   | `reg_noen` | Se explica por qué A, B, ALUOut y MDR no necesitan habilitación |
+   | `instr_mem` | Se corrige la nota sobre el final del programa (el `ret` de `main` salta a la dirección 0) |
+   | `tb_riscv_top` | Se aclara que el número de ciclo puede variar en 1 entre simuladores |
+
+   Además, todos los comentarios se escribieron **sin tildes ni caracteres especiales**, para que el
+   editor de Vivado los muestre bien.
+
+2. **Un testbench por multiplexor.** El `tb_mux.v` de las etapas anteriores, que probaba los tres
+   multiplexores juntos, se separó en `tb_mux2.v`, `tb_mux3.v` y `tb_mux4.v`, para que cada módulo
+   tenga su propio archivo de prueba como pide el enunciado. Las pruebas son las mismas: cada valor
+   de `sel`, el valor por defecto de `mux3` (sel = 11 entrega d0) y que la salida sigue a la entrada.
+
+3. **Proyecto creado en Vivado 2019.2.** El `.xpr` de `ProyectoRISCV.5` estaba hecho a mano y no
+   abría en esta versión; el de `ProyectoRISCV.Final` sí.
+
+4. **Configuración de simulación.** Tiempo de simulación en 3000 ns (`xsim.simulate.runtime`), para
+   que `tb_riscv_top` termine sin presionar *Run All*, con Top de diseño `riscv_top` y Top de
+   simulación `tb_riscv_top`.
 
 Organización de los archivos dentro de `ProyectoRISCV.Final.srcs`:
 
