@@ -113,3 +113,40 @@ Nota sobre la leyenda del reloj: en la implementación solo los elementos que gu
 reloj: los registros azules (PC, IR, A, B, ALU out, MDR), la escritura del banco de registros y de la
 memoria de datos, y el registro de estado de la unidad de control. La ALU, los sumadores, los
 multiplexores, el generador de inmediatos y las lecturas de las memorias son combinacionales.
+
+## Diagramas por decodificación
+
+Carpeta: [`por_decodificacion/`](por_decodificacion)
+
+Sobre el diagrama de la iteración 2 se hizo un diagrama por cada decodificación (formato de
+instrucción), como recomienda la rúbrica. En cada uno el resto del circuito queda atenuado y se
+resalta solo lo que usa ese formato:
+
+- **Naranja:** camino de datos.
+- **Morado:** selección del siguiente PC.
+- **Verde:** banderas `Zero` y `Lt` hacia la unidad de control (solo en el tipo B).
+
+Debajo de cada diagrama se indica qué ocurre en cada estado de la máquina de estados (Fetch,
+Decode, Execute, Memory, Writeback) y qué señales de control se activan.
+
+| Diagrama | Instrucciones | Qué muestra |
+|---|---|---|
+| [Tipo I aritmética](por_decodificacion/diagrama_1_tipo_I_aritmetica.png) | `addi`, `andi`, `slli` (`li`, `mv`) | A op inmediato en la ALU → ALU out → rd. 4 ciclos |
+| [Tipo I carga](por_decodificacion/diagrama_2_tipo_I_carga_lw.png) | `lw` | A + inmediato (dirección) → memoria de datos → MDR → rd. 5 ciclos |
+| [Tipo I salto](por_decodificacion/diagrama_3_tipo_I_salto_jalr.png) | `jalr` (`ret`) | A + inmediato → ALU out con bit 0 en 0 → PC; PC + 4 → rd. 4 ciclos |
+| [Tipo S](por_decodificacion/diagrama_4_tipo_S_sw_sb.png) | `sw`, `sb` | A + inmediato (dirección); B → Data In; `SW / SB` elige palabra o byte. 4 ciclos |
+| [Tipo B](por_decodificacion/diagrama_5_tipo_B_bne_bge.png) | `bne`, `bge` (`bnez`) | A − B → `Zero` / `Lt` → la unidad de control elige PC + Imm o PC + 4. 3 ciclos |
+| [Tipo U](por_decodificacion/diagrama_6_tipo_U_lui.png) | `lui` | Inmediato → multiplexor de resultado → rd. 3 ciclos |
+| [Tipo J](por_decodificacion/diagrama_7_tipo_J_jal.png) | `jal` (`j`) | PC + Imm → PC; PC + 4 → rd. 3 ciclos |
+
+`lui` y `jal` no usan la ALU: el inmediato va directo al multiplexor de resultado y los sumadores
+propios del PC calculan PC + Imm y PC + 4. Por eso la unidad de control los lleva de Decode
+directamente a Writeback, sin pasar por Execute.
+
+![Tipo I aritmética](por_decodificacion/diagrama_1_tipo_I_aritmetica.png)
+![Tipo I carga](por_decodificacion/diagrama_2_tipo_I_carga_lw.png)
+![Tipo I salto](por_decodificacion/diagrama_3_tipo_I_salto_jalr.png)
+![Tipo S](por_decodificacion/diagrama_4_tipo_S_sw_sb.png)
+![Tipo B](por_decodificacion/diagrama_5_tipo_B_bne_bge.png)
+![Tipo U](por_decodificacion/diagrama_6_tipo_U_lui.png)
+![Tipo J](por_decodificacion/diagrama_7_tipo_J_jal.png)

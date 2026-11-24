@@ -388,6 +388,10 @@ su explicación. La primera iteración es una ruta de datos de un solo ciclo par
 la segunda es el diseño multiciclo final, que ejecuta los cinco formatos y es el que se
 implementó en Verilog.
 
+Sobre el diagrama final hay además un diagrama por decodificación (tipos I aritmética, I carga,
+I salto, S, B, U y J) con el camino que usa cada formato resaltado, en
+[`docs/diagramas/por_decodificacion/`](docs/diagramas/por_decodificacion).
+
 ## Estructura del repositorio
 
 ```
