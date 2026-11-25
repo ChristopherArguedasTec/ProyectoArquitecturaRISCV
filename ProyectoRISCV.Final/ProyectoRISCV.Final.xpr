@@ -3,10 +3,10 @@
 <!--                                                         -->
 <!-- Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="44" Path="C:/Users/chris/ProyectoRISCV.Final/ProyectoRISCV.Final.xpr">
+<Project Version="7" Minor="44" Path="C:/Users/chris/OneDrive/Escritorio/ProyectoRISCV.Final/ProyectoRISCV.Final.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="8f13559b3bb245c4937ce73353fd41e9"/>
+    <Option Name="Id" Val="2cf9ef03fd9944b1872a98e7af436dc5"/>
     <Option Name="Part" Val="xc7a35tcpg236-1"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -21,7 +21,6 @@
     <Option Name="ActiveSimSet" Val="sim_1"/>
     <Option Name="DefaultLib" Val="xil_defaultlib"/>
     <Option Name="ProjectType" Val="Default"/>
-    <Option Name="IPOutputRepo" Val="$PCACHEDIR/ip"/>
     <Option Name="IPCachePermission" Val="read"/>
     <Option Name="IPCachePermission" Val="write"/>
     <Option Name="EnableCoreContainer" Val="FALSE"/>
@@ -29,7 +28,7 @@
     <Option Name="IPUserFilesDir" Val="$PIPUSERFILESDIR"/>
     <Option Name="IPStaticSourceDir" Val="$PIPUSERFILESDIR/ipstatic"/>
     <Option Name="EnableBDX" Val="FALSE"/>
-    <Option Name="WTXSimLaunchSim" Val="11"/>
+    <Option Name="WTXSimLaunchSim" Val="14"/>
     <Option Name="WTModelSimLaunchSim" Val="0"/>
     <Option Name="WTQuestaLaunchSim" Val="0"/>
     <Option Name="WTIesLaunchSim" Val="0"/>
@@ -60,7 +59,7 @@
       <Filter Type="Srcs"/>
       <File Path="$PSRCDIR/sources_1/imports/RISCV_sin_tildes/Etapas_1_y_2/design_sources/alu.v">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../OneDrive/Escritorio/RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/design_sources/alu.v"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/design_sources/alu.v"/>
           <Attr Name="ImportTime" Val="1795465586"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -69,7 +68,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/RISCV_sin_tildes/Etapa4/design_sources/control_unit.v">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../OneDrive/Escritorio/RISCV_sin_tildes/RISCV_sin_tildes/Etapa4/design_sources/control_unit.v"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../RISCV_sin_tildes/RISCV_sin_tildes/Etapa4/design_sources/control_unit.v"/>
           <Attr Name="ImportTime" Val="1795465585"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -78,7 +77,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/RISCV_sin_tildes/Etapa3/design_sources/data_mem.v">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../OneDrive/Escritorio/RISCV_sin_tildes/RISCV_sin_tildes/Etapa3/design_sources/data_mem.v"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../RISCV_sin_tildes/RISCV_sin_tildes/Etapa3/design_sources/data_mem.v"/>
           <Attr Name="ImportTime" Val="1795465586"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -87,7 +86,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/RISCV_sin_tildes/Etapas_1_y_2/design_sources/imm_gen.v">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../OneDrive/Escritorio/RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/design_sources/imm_gen.v"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/design_sources/imm_gen.v"/>
           <Attr Name="ImportTime" Val="1795465586"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -96,7 +95,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/RISCV_sin_tildes/Etapa3/design_sources/instr_mem.v">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../OneDrive/Escritorio/RISCV_sin_tildes/RISCV_sin_tildes/Etapa3/design_sources/instr_mem.v"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../RISCV_sin_tildes/RISCV_sin_tildes/Etapa3/design_sources/instr_mem.v"/>
           <Attr Name="ImportTime" Val="1795465586"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -105,7 +104,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/RISCV_sin_tildes/Etapas_1_y_2/design_sources/mux2.v">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../OneDrive/Escritorio/RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/design_sources/mux2.v"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/design_sources/mux2.v"/>
           <Attr Name="ImportTime" Val="1795465586"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -114,7 +113,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/RISCV_sin_tildes/Etapas_1_y_2/design_sources/mux3.v">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../OneDrive/Escritorio/RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/design_sources/mux3.v"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/design_sources/mux3.v"/>
           <Attr Name="ImportTime" Val="1795465586"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -123,7 +122,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/RISCV_sin_tildes/Etapas_1_y_2/design_sources/mux4.v">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../OneDrive/Escritorio/RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/design_sources/mux4.v"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/design_sources/mux4.v"/>
           <Attr Name="ImportTime" Val="1795465586"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -132,7 +131,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/RISCV_sin_tildes/Etapas_1_y_2/design_sources/reg_en.v">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../OneDrive/Escritorio/RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/design_sources/reg_en.v"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/design_sources/reg_en.v"/>
           <Attr Name="ImportTime" Val="1795465586"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -141,7 +140,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/RISCV_sin_tildes/Etapas_1_y_2/design_sources/reg_noen.v">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../OneDrive/Escritorio/RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/design_sources/reg_noen.v"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/design_sources/reg_noen.v"/>
           <Attr Name="ImportTime" Val="1795465586"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -150,7 +149,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/RISCV_sin_tildes/Etapa3/design_sources/regfile.v">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../OneDrive/Escritorio/RISCV_sin_tildes/RISCV_sin_tildes/Etapa3/design_sources/regfile.v"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../RISCV_sin_tildes/RISCV_sin_tildes/Etapa3/design_sources/regfile.v"/>
           <Attr Name="ImportTime" Val="1795465586"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -159,7 +158,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/RISCV_sin_tildes/Etapas_1_y_2/design_sources/sumador.v">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../OneDrive/Escritorio/RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/design_sources/sumador.v"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/design_sources/sumador.v"/>
           <Attr Name="ImportTime" Val="1795465586"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -168,7 +167,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/RISCV_sin_tildes/Etapa5/design_sources/riscv_top.v">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../OneDrive/Escritorio/RISCV_sin_tildes/RISCV_sin_tildes/Etapa5/design_sources/riscv_top.v"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../RISCV_sin_tildes/RISCV_sin_tildes/Etapa5/design_sources/riscv_top.v"/>
           <Attr Name="ImportTime" Val="1795465586"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -189,9 +188,19 @@
     </FileSet>
     <FileSet Name="sim_1" Type="SimulationSrcs" RelSrcDir="$PSRCDIR/sim_1">
       <Filter Type="Srcs"/>
+      <File Path="$PSRCDIR/sim_1/imports/RISCV_sin_tildes/Etapa5/simulation_sources/tb_riscv_top.v">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../RISCV_sin_tildes/RISCV_sin_tildes/Etapa5/simulation_sources/tb_riscv_top.v"/>
+          <Attr Name="ImportTime" Val="1795465586"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <File Path="$PSRCDIR/sim_1/imports/simulation_sources/tb_mux4.v">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../OneDrive/Escritorio/RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/simulation_sources/tb_mux4.v"/>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/simulation_sources/tb_mux4.v"/>
           <Attr Name="ImportTime" Val="1795556994"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -201,7 +210,7 @@
       <File Path="$PSRCDIR/sim_1/imports/simulation_sources/tb_mux3.v">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../OneDrive/Escritorio/RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/simulation_sources/tb_mux3.v"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/simulation_sources/tb_mux3.v"/>
           <Attr Name="ImportTime" Val="1795556991"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -211,18 +220,8 @@
       <File Path="$PSRCDIR/sim_1/imports/simulation_sources/tb_mux2.v">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../OneDrive/Escritorio/RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/simulation_sources/tb_mux2.v"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/simulation_sources/tb_mux2.v"/>
           <Attr Name="ImportTime" Val="1795556987"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sim_1/imports/RISCV_sin_tildes/Etapa5/simulation_sources/tb_riscv_top.v">
-        <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../OneDrive/Escritorio/RISCV_sin_tildes/RISCV_sin_tildes/Etapa5/simulation_sources/tb_riscv_top.v"/>
-          <Attr Name="ImportTime" Val="1795465586"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -231,7 +230,7 @@
       <File Path="$PSRCDIR/sim_1/imports/RISCV_sin_tildes/Etapa3/simulation_sources/tb_instr_mem.v">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../OneDrive/Escritorio/RISCV_sin_tildes/RISCV_sin_tildes/Etapa3/simulation_sources/tb_instr_mem.v"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../RISCV_sin_tildes/RISCV_sin_tildes/Etapa3/simulation_sources/tb_instr_mem.v"/>
           <Attr Name="ImportTime" Val="1795465586"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -241,7 +240,7 @@
       <File Path="$PSRCDIR/sim_1/imports/RISCV_sin_tildes/Etapa4/simulation_sources/tb_control_unit.v">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../OneDrive/Escritorio/RISCV_sin_tildes/RISCV_sin_tildes/Etapa4/simulation_sources/tb_control_unit.v"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../RISCV_sin_tildes/RISCV_sin_tildes/Etapa4/simulation_sources/tb_control_unit.v"/>
           <Attr Name="ImportTime" Val="1795465585"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -251,7 +250,7 @@
       <File Path="$PSRCDIR/sim_1/imports/RISCV_sin_tildes/Etapas_1_y_2/simulation_sources/tb_imm_gen.v">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../OneDrive/Escritorio/RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/simulation_sources/tb_imm_gen.v"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/simulation_sources/tb_imm_gen.v"/>
           <Attr Name="ImportTime" Val="1795465586"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -261,7 +260,7 @@
       <File Path="$PSRCDIR/sim_1/imports/RISCV_sin_tildes/Etapas_1_y_2/simulation_sources/tb_reg_en.v">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../OneDrive/Escritorio/RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/simulation_sources/tb_reg_en.v"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/simulation_sources/tb_reg_en.v"/>
           <Attr Name="ImportTime" Val="1795465586"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -271,7 +270,7 @@
       <File Path="$PSRCDIR/sim_1/imports/RISCV_sin_tildes/Etapas_1_y_2/simulation_sources/tb_alu.v">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../OneDrive/Escritorio/RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/simulation_sources/tb_alu.v"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/simulation_sources/tb_alu.v"/>
           <Attr Name="ImportTime" Val="1795465586"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -281,7 +280,7 @@
       <File Path="$PSRCDIR/sim_1/imports/RISCV_sin_tildes/Etapas_1_y_2/simulation_sources/tb_reg_noen.v">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../OneDrive/Escritorio/RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/simulation_sources/tb_reg_noen.v"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/simulation_sources/tb_reg_noen.v"/>
           <Attr Name="ImportTime" Val="1795465586"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -291,7 +290,7 @@
       <File Path="$PSRCDIR/sim_1/imports/RISCV_sin_tildes/Etapa3/simulation_sources/tb_regfile.v">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../OneDrive/Escritorio/RISCV_sin_tildes/RISCV_sin_tildes/Etapa3/simulation_sources/tb_regfile.v"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../RISCV_sin_tildes/RISCV_sin_tildes/Etapa3/simulation_sources/tb_regfile.v"/>
           <Attr Name="ImportTime" Val="1795465586"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -301,7 +300,7 @@
       <File Path="$PSRCDIR/sim_1/imports/RISCV_sin_tildes/Etapas_1_y_2/simulation_sources/tb_sumador.v">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../OneDrive/Escritorio/RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/simulation_sources/tb_sumador.v"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../RISCV_sin_tildes/RISCV_sin_tildes/Etapas_1_y_2/simulation_sources/tb_sumador.v"/>
           <Attr Name="ImportTime" Val="1795465586"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -311,7 +310,7 @@
       <File Path="$PSRCDIR/sim_1/imports/RISCV_sin_tildes/Etapa3/simulation_sources/tb_data_mem.v">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../OneDrive/Escritorio/RISCV_sin_tildes/RISCV_sin_tildes/Etapa3/simulation_sources/tb_data_mem.v"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../RISCV_sin_tildes/RISCV_sin_tildes/Etapa3/simulation_sources/tb_data_mem.v"/>
           <Attr Name="ImportTime" Val="1795465586"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -320,7 +319,7 @@
       </File>
       <File Path="$PSRCDIR/sim_1/imports/simulation_sources/programa.hex">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../OneDrive/Escritorio/RISCV_sin_tildes/RISCV_sin_tildes/Etapa3/simulation_sources/programa.hex"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../RISCV_sin_tildes/RISCV_sin_tildes/Etapa3/simulation_sources/programa.hex"/>
           <Attr Name="ImportTime" Val="1795465586"/>
         </FileInfo>
       </File>

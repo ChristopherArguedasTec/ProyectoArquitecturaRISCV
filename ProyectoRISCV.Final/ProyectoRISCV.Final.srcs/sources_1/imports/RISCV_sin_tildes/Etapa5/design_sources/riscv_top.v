@@ -1,53 +1,30 @@
 `timescale 1ns / 1ps
 // ============================================================================
-// Modulo:  riscv_top
+// Modulo:   riscv_top
 // Proyecto: Microarquitectura RISC-V RV32I multiciclo - MT-7003
 //
-// Funcionalidad:
-//   Modulo superior del procesador. Instancia todos los modulos y los conecta
-//   segun la tabla de conexiones (seccion 4 del documento). No tiene logica
-//   propia, salvo el cable que pone en cero el bit 0 del destino de jalr y
-//   la senal done (PCWrite AND opcode de jalr).
-//
-// Entradas:
-//   clk   - reloj
-//   reset - reset sincrono, activo en alto (PC = 0, FSM en Fetch, registros
-//           en 0)
-// Salidas (solo para observar el resultado; el enunciado limita las
-// entradas a clk y reset, no las salidas):
-//   mem_we    - 1 cuando se escribe en la memoria de datos (sw o sb)
-//   mem_byte  - 1 si la escritura es de un byte (sb), 0 si es palabra (sw)
-//   mem_addr  - direccion de la escritura (ALUOut)
-//   mem_wdata - dato que se escribe (registro B; en sb solo cuenta [7:0])
-//   reg_we    - 1 cuando se escribe un registro (Writeback)
-//   reg_wa    - numero del registro que se escribe (rd)
-//   reg_wd    - valor que se escribe en rd (Result)
-//   done      - 1 en el ciclo en que se ejecuta el ret (jalr) de main
-//   Las salidas tambien evitan que la sintesis elimine la logica. El dump
-//   completo de la memoria se sigue haciendo desde el testbench.
-//
-// Parametros:
-//   PROGRAMA - archivo hexadecimal que se carga en la memoria de
-//              instrucciones (lo unico que se cambia durante la evaluacion)
-//
-// Por que existe:
-//   Es la solucion completa que se evalua: une la ruta de datos (PC, memorias,
-//   IR, banco de registros, A, B, ALU, ALUOut, MDR, sumadores, multiplexores
-//   y generador de inmediatos) con la unidad de control.
+// Modulo superior del procesador y solucion completa que se evalua. Une la
+// ruta de datos (PC, memorias, IR, banco de registros, A, B, ALU, ALUOut,
+// MDR, sumadores, multiplexores y generador de inmediatos) con la unidad de
+// control, segun la tabla de conexiones. No tiene logica propia, salvo el
+// cable que pone en cero el bit 0 del destino de jalr y la senal done.
 // ============================================================================
 module riscv_top #(
-    parameter PROGRAMA = "programa.hex"
+    parameter PROGRAMA = "programa.hex"     // programa de la memoria de instrucciones
 )(
-    input  wire        clk,
-    input  wire        reset,
-    output wire        mem_we,
-    output wire        mem_byte,
-    output wire [31:0] mem_addr,
-    output wire [31:0] mem_wdata,
-    output wire        reg_we,
-    output wire [4:0]  reg_wa,
-    output wire [31:0] reg_wd,
-    output wire        done
+    input  wire        clk,                 // reloj
+    input  wire        reset,               // reset: PC = 0, FSM en Fetch, registros en 0
+    // Salidas solo para observar el resultado (el enunciado limita las
+    // entradas a clk y reset, no las salidas). Tambien evitan que la sintesis
+    // elimine la logica. El dump completo se sigue haciendo desde el testbench.
+    output wire        mem_we,              // 1 al escribir la memoria (sw o sb)
+    output wire        mem_byte,            // 1 = byte (sb), 0 = palabra (sw)
+    output wire [31:0] mem_addr,            // direccion de la escritura (ALUOut)
+    output wire [31:0] mem_wdata,           // dato (B; en sb solo cuenta [7:0])
+    output wire        reg_we,              // 1 al escribir un registro (Writeback)
+    output wire [4:0]  reg_wa,              // numero del registro que se escribe (rd)
+    output wire [31:0] reg_wd,              // valor que se escribe en rd (Result)
+    output wire        done                 // 1 en el ciclo del ret de main
 );
 
     // ---------------- Cables de la ruta de datos ----------------
@@ -63,7 +40,7 @@ module riscv_top #(
     wire [1:0]  PCSrc, ResultSrc;
     wire [2:0]  ImmSrc, ALUControl;
 
-    // ---------------- Campos de la instruccion ----------------
+    // ---------------- Campos de la instruccion (tomados del IR) ----------------
     wire [6:0]  opcode = ir[6:0];
     wire [2:0]  funct3 = ir[14:12];
     wire [4:0]  rs1    = ir[19:15];
@@ -71,6 +48,8 @@ module riscv_top #(
     wire [4:0]  rd     = ir[11:7];
 
     // ---------------- Camino del PC ----------------
+    // PC (se escribe con PCWrite), sumadores PC + 4 y PC + Imm, y mux PCSrc.
+    // La entrada d2 del mux es el destino de jalr con el bit 0 en cero.
     reg_en   #(32) u_pc       (.clk(clk), .reset(reset), .en(PCWrite), .d(pc_next), .q(pc));
     sumador        u_add_pc4  (.a(pc), .b(32'd4),   .y(pc_plus4));
     sumador        u_add_pcimm(.a(pc), .b(imm_ext), .y(pc_imm));
@@ -78,10 +57,12 @@ module riscv_top #(
                                .d2({alu_out[31:1], 1'b0}), .y(pc_next));
 
     // ---------------- Fetch ----------------
+    // Memoria de instrucciones leida en la direccion del PC; el IR la guarda
     instr_mem #(.DEPTH(256), .FILE(PROGRAMA)) u_imem (.addr(pc), .data(instr));
     reg_en   #(32) u_ir       (.clk(clk), .reset(reset), .en(IRWrite), .d(instr), .q(ir));
 
     // ---------------- Decode ----------------
+    // Banco de registros, generador de inmediatos (lee el IR) y registros A y B
     regfile        u_regfile  (.clk(clk), .reset(reset), .we(RegWrite), .ra1(rs1), .ra2(rs2),
                                .wa(rd), .wd(result), .rd1(rd1), .rd2(rd2));
     imm_gen        u_imm_gen  (.instr(ir), .imm_src(ImmSrc), .imm_ext(imm_ext));
@@ -89,17 +70,20 @@ module riscv_top #(
     reg_noen #(32) u_b        (.clk(clk), .reset(reset), .d(rd2), .q(b));
 
     // ---------------- Execute ----------------
+    // Mux ALUSrc (B o inmediato), ALU y registro ALUOut
     mux2     #(32) u_mux_alusrc(.sel(ALUSrc), .d0(b), .d1(imm_ext), .y(alu_b));
     alu            u_alu      (.a(a), .b(alu_b), .alu_control(ALUControl),
                                .result(alu_result), .zero(zero), .lt(lt));
     reg_noen #(32) u_aluout   (.clk(clk), .reset(reset), .d(alu_result), .q(alu_out));
 
     // ---------------- Memory ----------------
+    // Memoria de datos (direccion desde ALUOut, dato desde B) y registro MDR
     data_mem #(.DEPTH(1024)) u_dmem (.clk(clk), .we(MemWrite), .store_byte(StoreByte),
                                      .addr(alu_out), .wdata(b), .rdata(mem_rdata));
     reg_noen #(32) u_mdr      (.clk(clk), .reset(reset), .d(mem_rdata), .q(mdr));
 
     // ---------------- Writeback ----------------
+    // Mux ResultSrc: ALUOut, MDR, PC + 4 o inmediato hacia rd
     mux4     #(32) u_mux_result(.sel(ResultSrc), .d0(alu_out), .d1(mdr), .d2(pc_plus4),
                                 .d3(imm_ext), .y(result));
 

@@ -1,43 +1,30 @@
 `timescale 1ns / 1ps
 // ============================================================================
-// Modulo:  reg_en
+// Modulo:   reg_en
 // Proyecto: Microarquitectura RISC-V RV32I multiciclo - MT-7003
 //
-// Funcionalidad:
-//   Registro de WIDTH bits con habilitacion (enable). En cada flanco de subida
-//   del reloj captura la entrada d solo si en = 1; si en = 0 conserva su valor.
-//   Con reset (sincrono, activo en alto) vuelve a 0.
-//
-// Entradas:
-//   clk   - reloj
-//   reset - reset sincrono, activo en alto
-//   en    - habilitacion de escritura (PC: PCWrite, IR: IRWrite)
-//   d     - dato a guardar (PC: pc_next, IR: instr)
-// Salidas:
-//   q     - valor guardado (PC: pc, IR: ir)
-//
-// Por que existe:
-//   En el diseno multiciclo una instruccion dura varios ciclos. El PC y el IR
-//   deben mantener su valor durante toda la instruccion y solo actualizarse en
-//   un ciclo especifico: el PC en el ultimo estado (PCWrite) y el IR en Fetch
-//   (IRWrite). Por eso necesitan enable.
-//   Instancias: u_pc y u_ir (WIDTH = 32).
+// Registro de WIDTH bits con habilitacion (enable). En el diseno multiciclo
+// una instruccion dura varios ciclos; el PC y el IR deben mantener su valor
+// durante toda la instruccion y solo actualizarse en un ciclo especifico:
+// el PC en el ultimo estado (PCWrite) y el IR en Fetch (IRWrite).
+// Instancias: u_pc y u_ir (WIDTH = 32).
 // ============================================================================
 module reg_en #(
-    parameter WIDTH = 32
+    parameter WIDTH = 32                    // ancho del dato en bits
 )(
-    input  wire             clk,
-    input  wire             reset,
-    input  wire             en,
-    input  wire [WIDTH-1:0] d,
-    output reg  [WIDTH-1:0] q
+    input  wire             clk,            // reloj
+    input  wire             reset,          // reset sincrono, activo en alto
+    input  wire             en,             // habilitacion (PC: PCWrite, IR: IRWrite)
+    input  wire [WIDTH-1:0] d,              // dato a guardar (PC: pc_next, IR: instr)
+    output reg  [WIDTH-1:0] q               // valor guardado (PC: pc, IR: ir)
 );
 
+    // Todo ocurre en el flanco de subida del reloj
     always @(posedge clk) begin
         if (reset)
-            q <= {WIDTH{1'b0}};
+            q <= {WIDTH{1'b0}};             // reset: el registro vuelve a 0
         else if (en)
-            q <= d;
+            q <= d;                         // en = 1: captura el dato d
         // si en = 0, q conserva su valor
     end
 
