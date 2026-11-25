@@ -212,6 +212,14 @@ Estados de la máquina y qué instrucciones pasa por cada uno:
 | S4 Writeback | Se escribe rd y se actualiza el PC | S0 |
 | HALT | Opcode no soportado: el procesador se detiene | HALT (sale solo con reset) |
 
+El diagrama de la máquina de estados y la tabla con el valor de todas las señales de control están
+en [`docs/maquina_de_estados/`](docs/maquina_de_estados):
+
+- [`diagrama_0_unidad_de_control_FSM.png`](docs/maquina_de_estados/diagrama_0_unidad_de_control_FSM.png):
+  los seis estados, sus códigos y las transiciones según el opcode.
+- [`diagrama_0b_unidad_de_control_senales.png`](docs/maquina_de_estados/diagrama_0b_unidad_de_control_senales.png):
+  las señales de escritura por estado y las señales de selección por instrucción.
+
 Así, cada instrucción tarda solo los ciclos que necesita: 3 los saltos condicionales, 3 `lui` y
 `jal`, 4 `sw`, `sb` y las aritméticas con inmediato, y 5 `lw`.
 
@@ -427,6 +435,7 @@ I salto, S, B, U y J) con el camino que usa cada formato resaltado, en
 
 ```
 docs/diagramas/                             iteraciones del diagrama
+docs/maquina_de_estados/                    máquina de estados y tabla de señales de la unidad de control
 ProyectoRISCV.1/                            etapa 1: módulos básicos
 ├── ProyectoRISCV.1.xpr                     proyecto de Vivado
 └── ProyectoRISCV.1.srcs/
