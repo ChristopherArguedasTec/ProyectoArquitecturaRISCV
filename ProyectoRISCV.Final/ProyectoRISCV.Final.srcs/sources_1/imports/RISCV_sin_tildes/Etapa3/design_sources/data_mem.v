@@ -22,7 +22,9 @@ module data_mem #(
 );
 
     localparam AW = $clog2(DEPTH);   // bits de indice (10 para 1024 palabras)
+    //clog2 lo que hace es log base 2 de DEPTH y DEPTH = 1024
 
+    
     reg [31:0] mem [0:DEPTH-1];             // DEPTH palabras de 32 bits
     // Indice de palabra: addr[AW+1:2]; el byte dentro de la palabra es
     // addr[1:0]. Como solo se usan los bits bajos, la direccion 0xFFFFFFE8
